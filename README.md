@@ -1,6 +1,6 @@
-# Stori Cymru Meeting
+# Cwrdd
 
-Stori Cymru's own booking pages (https://meet.stori.cymru): the open-source scheduler
+Cwrdd (Welsh for "meet") is Stori Cymru's own scheduling app – the booking pages at https://meet.stori.cymru. It is the open-source scheduler
 [Cal.diy](https://github.com/calcom/cal.diy) (MIT licence) with our name, logo and house rules applied.
 
 This repository holds only **our changes and the build recipe** – not Cal.diy itself.
@@ -12,7 +12,7 @@ This repository holds only **our changes and the build recipe** – not Cal.diy 
 | `apply-branding.sh` | Applies the patch and copies the brand files into a Cal.diy checkout |
 | `.github/workflows/build.yml` | Builds the finished image on GitHub and stores it in this repository's packages |
 
-**To make a new build:** Actions → *Build Stori Cymru Meeting* → *Run workflow*. Give it a name such as today's date.
+**To make a new build:** Actions → *Build Cwrdd* → *Run workflow*. Give it a name such as today's date.
 To move to a newer Cal.diy, put its commit in *cal_ref*. If the patch no longer fits, the build stops at
 "Apply Stori Cymru branding" and the patch needs updating.
 

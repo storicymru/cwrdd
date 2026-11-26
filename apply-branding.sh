@@ -1,5 +1,5 @@
 #!/bin/sh
-# Turns a checkout of Cal.diy into "Stori Cymru Meeting". Run from this folder: sh apply-branding.sh <path to cal.diy>
+# Turns a checkout of Cal.diy into "Cwrdd". Run from this folder: sh apply-branding.sh <path to cal.diy>
 # Fails loudly if Cal.diy has changed so much that the patch no longer fits – then the patch needs redoing by hand.
 set -eu
 CAL="$1"; HERE="$(cd "$(dirname "$0")" && pwd)"

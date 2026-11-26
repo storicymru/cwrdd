@@ -1,6 +1,6 @@
-# Builds the Stori Cymru Meeting image (Cal.diy + our branding) and stores it in this repository's package registry.
-# Start it by hand: Actions → "Build Stori Cymru Meeting" → Run workflow. Takes roughly 30–60 minutes.
-name: Build Stori Cymru Meeting
+# Builds the Cwrdd image (Cal.diy + our branding) and stores it in this repository's package registry.
+# Start it by hand: Actions → "Build Cwrdd" → Run workflow. Takes roughly 30–60 minutes.
+name: Build Cwrdd
 on:
   workflow_dispatch:
     inputs:
@@ -43,7 +43,7 @@ jobs:
             --build-arg DATABASE_URL=postgresql://cal:buildonly@localhost:5432/cal \
             --build-arg NEXT_PUBLIC_LICENSE_CONSENT=agree \
             --build-arg CALCOM_TELEMETRY_DISABLED=1 \
-            --build-arg NEXT_PUBLIC_APP_NAME="Stori Cymru Meeting" \
+            --build-arg NEXT_PUBLIC_APP_NAME="Cwrdd" \
             --build-arg NEXT_PUBLIC_COMPANY_NAME="Stori Cymru" \
             --build-arg NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS=info@stori.cymru \
             --build-arg NEXT_PUBLIC_WEBSITE_URL=https://stori.cymru \
