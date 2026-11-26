@@ -1,6 +1,6 @@
 # Cwrdd
 
-Cwrdd (Welsh for "meet") is Stori Cymru's own scheduling app – the booking pages at https://meet.stori.cymru. It is the open-source scheduler
+Cwrdd (Welsh for "meet") is Stori Cymru's own scheduling app – the booking pages at https://cwrdd.stori.cymru. It is the open-source scheduler
 [Cal.diy](https://github.com/calcom/cal.diy) (MIT licence) with our name, logo and house rules applied.
 
 This repository holds only **our changes and the build recipe** – not Cal.diy itself.
