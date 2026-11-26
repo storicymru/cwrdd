@@ -1,15 +1,11 @@
 # Builds the Cwrdd image (Cal.diy + our branding) and stores it in this repository's package registry.
-# Start it by hand: Actions → "Build Cwrdd" → Run workflow. Takes roughly 30–60 minutes.
+# Takes roughly 30–60 minutes. The Cal.diy version it builds from is the commit named in the CAL_REF file.
 name: Build Cwrdd
 on:
+  # A build starts when a tag named build-<something> is pushed, e.g. build-2026-11-26. It can also be started by hand.
+  push:
+    tags: ["build-*"]
   workflow_dispatch:
-    inputs:
-      cal_ref:
-        description: Cal.diy commit or tag to build from
-        default: ae027bb70e694e2d2c44569f398d6cbcee0389b1
-      tag:
-        description: Name for this build (e.g. 2026-11-26)
-        required: true
 permissions:
   contents: read
   packages: write
@@ -26,7 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
-        with: { repository: calcom/cal.diy, ref: "${{ inputs.cal_ref }}", path: cal }
+        with: { repository: calcom/cal.diy, path: cal, fetch-depth: 0 }
+      - name: Use the Cal.diy version named in CAL_REF
+        run: git -C cal checkout "$(cat CAL_REF)"
       - name: Apply Stori Cymru branding
         run: sh apply-branding.sh cal
       - name: Make room (extra swap and disk for the build)
@@ -39,6 +37,7 @@ jobs:
       - name: Build the image
         run: |
           IMAGE="ghcr.io/$(echo '${{ github.repository }}' | tr 'A-Z' 'a-z')"
+          TAG="${GITHUB_REF_NAME#build-}"; [ "$GITHUB_REF_TYPE" = tag ] || TAG="manual-${GITHUB_RUN_NUMBER}"
           docker build cal --network host \
             --build-arg DATABASE_URL=postgresql://cal:buildonly@localhost:5432/cal \
             --build-arg NEXT_PUBLIC_LICENSE_CONSENT=agree \
@@ -47,7 +46,7 @@ jobs:
             --build-arg NEXT_PUBLIC_COMPANY_NAME="Stori Cymru" \
             --build-arg NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS=info@stori.cymru \
             --build-arg NEXT_PUBLIC_WEBSITE_URL=https://stori.cymru \
-            -t "$IMAGE:${{ inputs.tag }}" -t "$IMAGE:latest"
-          docker push "$IMAGE:${{ inputs.tag }}"
+            -t "$IMAGE:$TAG" -t "$IMAGE:latest"
+          docker push "$IMAGE:$TAG"
           docker push "$IMAGE:latest"
-          echo "Built $IMAGE:${{ inputs.tag }} from Cal.diy ${{ inputs.cal_ref }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Built $IMAGE:$TAG from Cal.diy $(cat CAL_REF)" >> "$GITHUB_STEP_SUMMARY"
