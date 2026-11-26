@@ -1,0 +1,81 @@
+diff --git a/Dockerfile b/Dockerfile
+index 8605818..e350b63 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -14,6 +14,16 @@ ARG MAX_OLD_SPACE_SIZE=6144
+ ARG NEXT_PUBLIC_API_V2_URL
+ ARG CSP_POLICY
+ 
++## Stori Cymru branding (names are fixed into the pages when they are built)
++ARG NEXT_PUBLIC_APP_NAME
++ARG NEXT_PUBLIC_COMPANY_NAME
++ARG NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS
++ARG NEXT_PUBLIC_WEBSITE_URL
++ENV NEXT_PUBLIC_APP_NAME=$NEXT_PUBLIC_APP_NAME \
++  NEXT_PUBLIC_COMPANY_NAME=$NEXT_PUBLIC_COMPANY_NAME \
++  NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS=$NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS \
++  NEXT_PUBLIC_WEBSITE_URL=$NEXT_PUBLIC_WEBSITE_URL
++
+ ## We need these variables as required by Next.js build to create rewrites
+ ARG NEXT_PUBLIC_SINGLE_ORG_SLUG
+ ARG ORGANIZATIONS_ENABLED
+diff --git a/packages/features/bookings/components/TimeFormatToggle.tsx b/packages/features/bookings/components/TimeFormatToggle.tsx
+index 787bfd0..56a0a37 100644
+--- a/packages/features/bookings/components/TimeFormatToggle.tsx
++++ b/packages/features/bookings/components/TimeFormatToggle.tsx
+@@ -9,7 +9,9 @@ export const TimeFormatToggle = ({ customClassName }: { customClassName?: string
+   const setTimeFormat = useTimePreferences((state) => state.setTimeFormat);
+   const { t } = useLocale();
+ 
++  // Stori Cymru: times are always shown on the 24-hour clock, so the 12h/24h switch is hidden.
+   return (
++    <div className="hidden">
+     <ToggleGroup
+       customClassNames={customClassName}
+       onValueChange={(newFormat) => {
+@@ -23,5 +25,6 @@ export const TimeFormatToggle = ({ customClassName }: { customClassName?: string
+         { value: TimeFormat.TWENTY_FOUR_HOUR, label: t("24_hour_short") },
+       ]}
+     />
++    </div>
+   );
+ };
+diff --git a/packages/features/bookings/lib/timePreferences.ts b/packages/features/bookings/lib/timePreferences.ts
+index 6b04041..1eb1976 100644
+--- a/packages/features/bookings/lib/timePreferences.ts
++++ b/packages/features/bookings/lib/timePreferences.ts
+@@ -1,6 +1,6 @@
+ import { create } from "zustand";
+ 
+-import { TimeFormat, detectBrowserTimeFormat, setIs24hClockInLocalStorage } from "@calcom/lib/timeFormat";
++import { TimeFormat, setIs24hClockInLocalStorage } from "@calcom/lib/timeFormat";
+ import { CURRENT_TIMEZONE } from "@calcom/lib/timezoneConstants";
+ import { localStorage } from "@calcom/lib/webstorage";
+ 
+@@ -19,7 +19,8 @@ const timezoneLocalStorageKey = "timeOption.preferredTimeZone";
+  * any changes made in the user settings.
+  */
+ export const timePreferencesStore = create<TimePreferencesStore>((set) => ({
+-  timeFormat: detectBrowserTimeFormat,
++  // Stori Cymru: always the 24-hour clock, whatever the visitor's browser prefers.
++  timeFormat: TimeFormat.TWENTY_FOUR_HOUR,
+   setTimeFormat: (format: TimeFormat.TWELVE_HOUR | TimeFormat.TWENTY_FOUR_HOUR) => {
+     setIs24hClockInLocalStorage(format === TimeFormat.TWENTY_FOUR_HOUR);
+     set({ timeFormat: format });
+diff --git a/packages/lib/constants.ts b/packages/lib/constants.ts
+index 4787711..5bd0090 100644
+--- a/packages/lib/constants.ts
++++ b/packages/lib/constants.ts
+@@ -97,9 +97,9 @@ export const PUBLIC_QUICK_AVAILABILITY_ROLLOUT =
+ 
+ /** @deprecated use `WEBAPP_URL` */
+ export const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_WEBAPP_URL || `https://${process.env.VERCEL_URL}`;
+-export const LOGO = "/calcom-logo-white-word.svg";
+-export const LOGO_DARK = "/cal-logo-word-black.svg";
+-export const LOGO_ICON = "/cal-com-icon-white.svg";
++export const LOGO = "/stori-logo-white.png";
++export const LOGO_DARK = "/stori-logo-red.png";
++export const LOGO_ICON = "/stori-icon.png";
+ export const AVATAR_FALLBACK = "/avatar.svg";
+ export const FAVICON_16 = "/favicon-16x16.png";
+ export const FAVICON_32 = "/favicon-32x32.png";
