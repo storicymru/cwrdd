@@ -21,6 +21,38 @@ index 8605818..8b73917 100644
  ## We need these variables as required by Next.js build to create rewrites
  ARG NEXT_PUBLIC_SINGLE_ORG_SLUG
  ARG ORGANIZATIONS_ENABLED
+diff --git a/apps/web/components/phone-input/PhoneInput.tsx b/apps/web/components/phone-input/PhoneInput.tsx
+index 36949c4..fc248e4 100644
+--- a/apps/web/components/phone-input/PhoneInput.tsx
++++ b/apps/web/components/phone-input/PhoneInput.tsx
+@@ -31,7 +31,8 @@ function BasePhoneInput({
+   className = "",
+   onChange,
+   value,
+-  defaultCountry = "us",
++  // Stori Cymru: phone numbers default to the UK (+44) unless the visitor is clearly elsewhere.
++  defaultCountry = "gb",
+   ...rest
+ }: PhoneInputProps) {
+   const isPlatform = useIsPlatform();
+@@ -160,7 +161,7 @@ function BasePhoneInputWeb({
+ 
+ const useDefaultCountry = () => {
+   const defaultPhoneCountryFromStore = useBookerStore((state) => state.defaultPhoneCountry);
+-  const [defaultCountry, setDefaultCountry] = useState<CountryCode>(defaultPhoneCountryFromStore || "us");
++  const [defaultCountry, setDefaultCountry] = useState<CountryCode>(defaultPhoneCountryFromStore || "gb");
+   const query = trpc.viewer.public.countryCode.useQuery(undefined, {
+     refetchOnWindowFocus: false,
+     refetchOnReconnect: false,
+@@ -186,7 +187,7 @@ const useDefaultCountry = () => {
+         if (navCountry && isSupportedCountry(navCountry)) {
+           setDefaultCountry(navCountry.toLowerCase() as CountryCode);
+         } else {
+-          setDefaultCountry("us");
++          setDefaultCountry("gb");
+         }
+       }
+     },
 diff --git a/apps/web/modules/auth/login-view.tsx b/apps/web/modules/auth/login-view.tsx
 index 1f77f10..b922930 100644
 --- a/apps/web/modules/auth/login-view.tsx
