@@ -46,6 +46,7 @@ jobs:
             --build-arg NEXT_PUBLIC_COMPANY_NAME="Stori Cymru" \
             --build-arg NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS=info@stori.cymru \
             --build-arg NEXT_PUBLIC_WEBSITE_URL=https://stori.cymru \
+            --build-arg NEXT_PUBLIC_DISABLE_SIGNUP=true \
             -t "$IMAGE:$TAG" -t "$IMAGE:latest"
           docker push "$IMAGE:$TAG"
           docker push "$IMAGE:latest"

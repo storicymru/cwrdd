@@ -1,8 +1,8 @@
 diff --git a/Dockerfile b/Dockerfile
-index 8605818..e350b63 100644
+index 8605818..8b73917 100644
 --- a/Dockerfile
 +++ b/Dockerfile
-@@ -14,6 +14,16 @@ ARG MAX_OLD_SPACE_SIZE=6144
+@@ -14,6 +14,18 @@ ARG MAX_OLD_SPACE_SIZE=6144
  ARG NEXT_PUBLIC_API_V2_URL
  ARG CSP_POLICY
  
@@ -11,14 +11,59 @@ index 8605818..e350b63 100644
 +ARG NEXT_PUBLIC_COMPANY_NAME
 +ARG NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS
 +ARG NEXT_PUBLIC_WEBSITE_URL
++ARG NEXT_PUBLIC_DISABLE_SIGNUP
 +ENV NEXT_PUBLIC_APP_NAME=$NEXT_PUBLIC_APP_NAME \
 +  NEXT_PUBLIC_COMPANY_NAME=$NEXT_PUBLIC_COMPANY_NAME \
 +  NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS=$NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS \
-+  NEXT_PUBLIC_WEBSITE_URL=$NEXT_PUBLIC_WEBSITE_URL
++  NEXT_PUBLIC_WEBSITE_URL=$NEXT_PUBLIC_WEBSITE_URL \
++  NEXT_PUBLIC_DISABLE_SIGNUP=$NEXT_PUBLIC_DISABLE_SIGNUP
 +
  ## We need these variables as required by Next.js build to create rewrites
  ARG NEXT_PUBLIC_SINGLE_ORG_SLUG
  ARG ORGANIZATIONS_ENABLED
+diff --git a/apps/web/modules/auth/login-view.tsx b/apps/web/modules/auth/login-view.tsx
+index 1f77f10..b922930 100644
+--- a/apps/web/modules/auth/login-view.tsx
++++ b/apps/web/modules/auth/login-view.tsx
+@@ -183,7 +183,9 @@ export default function Login({
+         <div className="w-full rounded-xl border border-subtle bg-default p-10 shadow-sm">
+           {/* Logo */}
+           <div className="mb-2 text-center">
+-            <h1 className="font-cal text-xl font-bold text-emphasis">Cal.diy</h1>
++            {/* Stori Cymru: our logo and the app name */}
++            <img src="/stori-logo-red.png" alt="Stori Cymru" className="mx-auto mb-4 h-10 w-auto" />
++            <h1 className="font-cal text-xl font-bold text-emphasis">Cwrdd</h1>
+           </div>
+ 
+           {/* Heading */}
+diff --git a/apps/web/modules/bookings/components/Booker.tsx b/apps/web/modules/bookings/components/Booker.tsx
+index 3085147..57f9522 100644
+--- a/apps/web/modules/bookings/components/Booker.tsx
++++ b/apps/web/modules/bookings/components/Booker.tsx
+@@ -377,7 +377,9 @@ const BookerComponent = ({
+                   isMobile={isMobile}
+                   nextSlots={nextSlots}
+                   renderOverlay={() => {
+-                    if (isEmbed) return null;
++                    // Stori Cymru: clients never sign in here, so the "Overlay my calendar" switch is hidden.
++                    const hideOverlaySwitch = true;
++                    if (isEmbed || hideOverlaySwitch) return null;
+                     return (
+                       <OverlayCalendar
+                         isOverlayCalendarEnabled={isOverlayCalendarEnabled}
+diff --git a/packages/features/auth/lib/next-auth-options.ts b/packages/features/auth/lib/next-auth-options.ts
+index 296e645..2b6b01f 100644
+--- a/packages/features/auth/lib/next-auth-options.ts
++++ b/packages/features/auth/lib/next-auth-options.ts
+@@ -289,7 +289,7 @@ export async function authorizeCredentials(
+ 
+ export const CalComCredentialsProvider = CredentialsProvider({
+   id: "credentials",
+-  name: "Cal.diy",
++  name: "Cwrdd",
+   type: "credentials",
+   credentials: {
+     email: { label: "Email Address", type: "email", placeholder: "john.doe@example.com" },
 diff --git a/packages/features/bookings/components/TimeFormatToggle.tsx b/packages/features/bookings/components/TimeFormatToggle.tsx
 index 787bfd0..56a0a37 100644
 --- a/packages/features/bookings/components/TimeFormatToggle.tsx
@@ -79,3 +124,23 @@ index 4787711..5bd0090 100644
  export const AVATAR_FALLBACK = "/avatar.svg";
  export const FAVICON_16 = "/favicon-16x16.png";
  export const FAVICON_32 = "/favicon-32x32.png";
+diff --git a/packages/ui/components/logo/Logo.tsx b/packages/ui/components/logo/Logo.tsx
+index 356db40..d97125d 100644
+--- a/packages/ui/components/logo/Logo.tsx
++++ b/packages/ui/components/logo/Logo.tsx
+@@ -17,12 +17,12 @@ export function Logo({
+     <h3 className={classNames("logo", inline && "inline", className)}>
+       <strong>
+         {icon ? (
+-          <img className="mx-auto w-9 dark:invert" alt="Cal.diy" title="Cal.diy" src={`${src}?type=icon`} />
++          <img className="mx-auto w-9 dark:invert" alt="Cwrdd" title="Cwrdd" src={`${src}?type=icon`} />
+         ) : (
+           <img
+             className={classNames(small ? "h-4 w-auto" : "h-5 w-auto", "dark:invert")}
+-            alt="Cal.diy"
+-            title="Cal.diy"
++            alt="Cwrdd"
++            title="Cwrdd"
+             src={src}
+           />
+         )}

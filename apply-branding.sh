@@ -14,4 +14,6 @@ cp "$HERE/brand/icon-64.png" "$P/favicon-16x16.png"
 cp "$HERE/brand/icon-64.png" "$P/favicon-32x32.png"
 for n in 192x192 256x256 384x384; do cp "$HERE/brand/icon-192.png" "$P/android-chrome-$n.png"; done
 cp "$HERE/brand/icon-512.png" "$P/android-chrome-512x512.png"
+# Wording: every "Cal.diy" in the on-screen text (all languages) becomes "Cwrdd".
+find "$CAL/packages/i18n/locales" -name '*.json' -exec sed -i 's/Cal\.diy/Cwrdd/g; s/cal\.diy/Cwrdd/g' {} +
 echo "Stori Cymru branding applied to $CAL"
